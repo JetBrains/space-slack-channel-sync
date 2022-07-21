@@ -10,7 +10,6 @@ import org.jetbrains.spaceSlackSync.MDCParams
 import org.jetbrains.spaceSlackSync.SlackCredentials
 import org.jetbrains.spaceSlackSync.db
 import org.jetbrains.spaceSlackSync.encrypted
-import org.jetbrains.spaceSlackSync.html.respondError
 import org.jetbrains.spaceSlackSync.routing.Routes
 import org.jetbrains.spaceSlackSync.homepage.spaceHttpClient
 import org.slf4j.Logger
@@ -36,7 +35,7 @@ suspend fun onAppInstalledToSlackTeam(call: ApplicationCall, spaceOrgId: String,
     val accessTokenExpiresAt = LocalDateTime.now().plusSeconds(response?.expiresIn?.toLong() ?: 43200L)
     val teamId = response?.team?.id
 
-    withContext(MDCContext(mapOf(MDCParams.SLACK_TEAM to teamId.orEmpty(), MDCParams.SPACE_ORG to spaceOrgId))) {
+    withContext(MDCContext(mapOf(MDCParams.SLACK_TEAM to teamId.orEmpty(), MDCParams.SPACE_CLIENT_ID to spaceOrgId))) {
         if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank() || teamId.isNullOrBlank()) {
             val message = "Could not fetch OAuth token from Slack. " +
                     "Team id = $teamId, " +

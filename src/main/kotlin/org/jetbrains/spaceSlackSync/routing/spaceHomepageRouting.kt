@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.locations.*
 import io.ktor.server.locations.post
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
@@ -22,17 +23,16 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import space.jetbrains.api.runtime.SpaceAppInstance
 
-// TODO: use ktor-based authentication instead of `authorized`
 fun Routing.spaceHomepageRouting() {
     get<Routes.ListSyncedChannels> {
-        authorized {
+        runAuthorized {
             val response = SyncedChannelsService(it).listSyncedChannels()
             call.respond(HttpStatusCode.OK, response)
         }
     }
 
     get<Routes.GetSlackWorkspaces> {
-        authorized { spaceTokenInfo ->
+        runAuthorized { spaceTokenInfo ->
             val teams = db.slackTeams.getForSpaceOrg(spaceTokenInfo.spaceAppInstance.clientId).map { team ->
                 val teamName = slackAppClient(team).let { slackClient ->
                     slackClient.getTeamInfo {
@@ -47,10 +47,8 @@ fun Routing.spaceHomepageRouting() {
     }
 
     get<Routes.UrlForAddingSlackTeam> {
-        authorized { spaceTokenInfo ->
-            withContext(MDCContext(mapOf(MDCParams.SPACE_ORG to spaceTokenInfo.spaceAppInstance.clientId))) {
-                log.info("Adding Slack team to Space org")
-            }
+        runAuthorized { spaceTokenInfo ->
+            log.info("Adding Slack team to Space org")
 
             val installToSlackUrl = URLBuilder("https://slack.com/oauth/v2/authorize").run {
                 parameters.apply {
@@ -66,14 +64,14 @@ fun Routing.spaceHomepageRouting() {
     }
 
     get<Routes.SpaceChannelsToPickForSync> { params ->
-        authorized { spaceTokenInfo ->
+        runAuthorized { spaceTokenInfo ->
             val response = SpaceChannelsToPickForSync(spaceTokenInfo).getSpaceChannelsToPickFrom(params.query)
             call.respond(HttpStatusCode.OK, response)
         }
     }
 
     get<Routes.SlackChannelsToPickForSync> { params ->
-        authorized { spaceTokenInfo ->
+        runAuthorized { spaceTokenInfo ->
             val response =
                 SlackChannelsToPickForSync(spaceTokenInfo).getSlackChannelsToPickFrom(params.slackTeamId, params.query)
             call.respond(HttpStatusCode.OK, response)
@@ -81,7 +79,7 @@ fun Routing.spaceHomepageRouting() {
     }
 
     post<Routes.StartSync> { params ->
-        authorized { spaceTokenInfo ->
+        runAuthorized { spaceTokenInfo ->
             val response = StartSyncService(spaceTokenInfo).startSync(
                 params.spaceChannelId,
                 params.slackTeamId,
@@ -92,7 +90,7 @@ fun Routing.spaceHomepageRouting() {
     }
 
     post<Routes.StopSync> { params ->
-        authorized { spaceTokenInfo ->
+        runAuthorized { spaceTokenInfo ->
             val response = StopSyncService(spaceTokenInfo).stopSync(
                 params.spaceChannelId,
                 params.slackTeamId,
@@ -109,9 +107,16 @@ data class SpaceTokenInfo(
     val spaceAccessToken: String,
 )
 
-private suspend fun PipelineContext<Unit, ApplicationCall>.authorized(handler: suspend (SpaceTokenInfo) -> Unit) {
+private suspend fun PipelineContext<Unit, ApplicationCall>.runAuthorized(handler: suspend (SpaceTokenInfo) -> Unit) {
     getSpaceTokenInfo()?.let { spaceTokenInfo ->
-        handler(spaceTokenInfo)
+        withContext(MDCContext(mapOf(MDCParams.SPACE_CLIENT_ID to spaceTokenInfo.spaceAppInstance.clientId))) {
+            try {
+                handler(spaceTokenInfo)
+            } catch (e: Exception) {
+                log.error("Exception while processing the \"${call.request.uri}\" call from homepage UI", e)
+                call.respond(HttpStatusCode.InternalServerError)
+            }
+        }
     } ?: run {
         call.respond(HttpStatusCode.Unauthorized, "Invalid access token")
     }

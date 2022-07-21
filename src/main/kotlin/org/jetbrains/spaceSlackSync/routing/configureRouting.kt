@@ -11,7 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.spaceSlackSync.slack.onAppInstalledToSlackTeam
 import org.jetbrains.spaceSlackSync.slack.onSlackEvent
-import org.jetbrains.spaceSlackSync.space.onSpaceCall
+import org.jetbrains.spaceSlackSync.space.processSpaceCall
 
 
 fun Application.configureRouting() {
@@ -39,7 +39,7 @@ fun Application.configureRouting() {
         spaceHomepageRouting()
 
         post<Routes.SpaceApiEndpoint> {
-            onSpaceCall(call)
+            processSpaceCall(call)
         }
 
         get<Routes.SlackOAuthCallback> { params ->

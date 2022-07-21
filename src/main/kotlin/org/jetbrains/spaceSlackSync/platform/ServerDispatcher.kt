@@ -16,11 +16,5 @@ private val serverThreadFactory = object : ThreadFactory {
 }
 
 // TODO: make sure coroutines finish their execution when application node is stopped
-private val Server = Executors.newScheduledThreadPool(serverDispatchThreadCount, serverThreadFactory)
+val Server = Executors.newScheduledThreadPool(serverDispatchThreadCount, serverThreadFactory)
     .asCoroutineDispatcher()
-
-@OptIn(DelicateCoroutinesApi::class)
-fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(
-    context = Server,
-    block = block
-)

@@ -3,9 +3,10 @@ package org.jetbrains.spaceSlackSync
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.*
-import org.jetbrains.spaceSlackSync.platform.launch
-import org.jetbrains.spaceSlackSync.routing.configureRouting
+import kotlinx.coroutines.launch
 import org.jetbrains.spaceSlackSync.homepage.SlackTeamCache
+import org.jetbrains.spaceSlackSync.platform.Server
+import org.jetbrains.spaceSlackSync.routing.configureRouting
 import org.jetbrains.spaceSlackSync.storage.Storage
 import org.jetbrains.spaceSlackSync.storage.postgres.initPostgres
 
@@ -14,7 +15,7 @@ fun Application.module() {
     db.apply {
     }
 
-    launch {
+    launch(Server) {
         SlackTeamCache.clearCacheForAllTeams()
     }
 

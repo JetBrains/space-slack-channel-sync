@@ -2,10 +2,19 @@ package org.jetbrains.spaceSlackSync.space
 
 import org.jetbrains.spaceSlackSync.db
 import org.jetbrains.spaceSlackSync.slack.SlackClient
+import org.slf4j.LoggerFactory
 import space.jetbrains.api.runtime.helpers.ProcessingScope
 import space.jetbrains.api.runtime.types.*
 
 suspend fun ProcessingScope.processChatMessageFromSpace(event: WebhookEvent) {
+    try {
+        doProcessChatMessageFromSpace(event)
+    } catch (e: Exception) {
+        log.error("Error while processing webhook request", e)
+    }
+}
+
+private suspend fun ProcessingScope.doProcessChatMessageFromSpace(event: WebhookEvent) {
     when (event) {
         is ChatMessageCreatedEvent -> {
             val spaceChatEventData = SpaceChatEventData(event.channelId, event.message.id, event.threadId)
@@ -48,3 +57,5 @@ private suspend fun ProcessingScope.getContext(spaceChatEventData: SpaceChatEven
 private suspend fun ProcessingScope.getSyncedChannel(spaceChatEventData: SpaceChatEventData) =
     db.syncedChannels.getByAppClientId(spaceAppClientId = appInstance.clientId)
         .firstOrNull { it.spaceChannelId == spaceChatEventData.spaceChannelId }
+
+private val log = LoggerFactory.getLogger("SpaceWebhooksProcessing")

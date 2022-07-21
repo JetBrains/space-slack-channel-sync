@@ -8,6 +8,7 @@ import org.jetbrains.spaceSlackSync.db
 import org.jetbrains.spaceSlackSync.homepage.spaceHttpClient
 import org.jetbrains.spaceSlackSync.storage.SlackTeam
 import org.jetbrains.spaceSlackSync.storage.SyncedChannel
+import org.slf4j.LoggerFactory
 import space.jetbrains.api.runtime.SpaceAuth
 import space.jetbrains.api.runtime.SpaceClient
 
@@ -61,3 +62,5 @@ private fun isMessagePostedByThisApp(requestBodyJson: JsonElement): Boolean {
 
     return appId == SlackCredentials.appId
 }
+
+private val log = LoggerFactory.getLogger("SlackMessageEvent")

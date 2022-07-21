@@ -1,4 +1,4 @@
-package org.jetbrains.spaceSlackSync.html
+package org.jetbrains.spaceSlackSync.slack
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -30,10 +30,6 @@ private fun HTML.page(initHead: HEAD.() -> Unit = {}, initBody: DIV.() -> Unit) 
     body {
         div {
             classes = setOf("main")
-
-            h2 {
-                +"Where JetBrains Space meets Slack"
-            }
 
             initBody()
         }

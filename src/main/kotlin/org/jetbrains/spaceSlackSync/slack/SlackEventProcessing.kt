@@ -2,16 +2,12 @@ package org.jetbrains.spaceSlackSync.slack
 
 import com.slack.api.app_backend.SlackSignature
 import com.slack.api.app_backend.events.EventTypeExtractorImpl
-import com.slack.api.app_backend.events.payload.AppUninstalledPayload
-import com.slack.api.app_backend.events.payload.ChannelArchivePayload
-import com.slack.api.app_backend.events.payload.ChannelCreatedPayload
-import com.slack.api.app_backend.events.payload.ChannelDeletedPayload
-import com.slack.api.app_backend.events.payload.ChannelUnarchivePayload
-import com.slack.api.app_backend.events.payload.TeamDomainChangePayload
+import com.slack.api.app_backend.events.payload.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
@@ -19,9 +15,8 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.jetbrains.spaceSlackSync.SlackCredentials
 import org.jetbrains.spaceSlackSync.db
 import org.jetbrains.spaceSlackSync.gson
-import org.jetbrains.spaceSlackSync.html.respondError
-import org.jetbrains.spaceSlackSync.platform.launch
 import org.jetbrains.spaceSlackSync.homepage.SlackTeamCache
+import org.jetbrains.spaceSlackSync.platform.Server
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -56,7 +51,7 @@ suspend fun onSlackEvent(call: ApplicationCall) {
             return
         }
         "event_callback" -> {
-            launch {
+            call.application.launch(Server) {
                 // process event asynchronously
                 processEventFromSlack(requestBody, requestBodyJson)
             }
@@ -66,10 +61,15 @@ suspend fun onSlackEvent(call: ApplicationCall) {
     call.respond(HttpStatusCode.OK)
 }
 
-private suspend fun processEventFromSlack(
-    requestBody: String,
-    requestBodyJson: JsonElement
-) {
+private suspend fun processEventFromSlack(requestBody: String, requestBodyJson: JsonElement) {
+    try {
+        doProcessEventFromSlack(requestBody, requestBodyJson)
+    } catch (e: Exception) {
+        log.error("Exception during processing event from Slack", e)
+    }
+}
+
+private suspend fun doProcessEventFromSlack(requestBody: String, requestBodyJson: JsonElement) {
     when (val eventType = slackEventTypeExtractor.extractEventType(requestBody)) {
         "team_domain_change" -> {
             val evt = gson.fromJson(requestBody, TeamDomainChangePayload::class.java)
