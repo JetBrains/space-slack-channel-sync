@@ -117,7 +117,7 @@ tasks {
     }
     dockerCompose.isRequiredBy(run)
 
-    val assemble by existing {
+    val distZip by existing {
         dependsOn("buildClient")
     }
 }
