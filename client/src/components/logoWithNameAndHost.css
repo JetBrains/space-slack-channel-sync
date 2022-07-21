@@ -1,0 +1,27 @@
+.logoWithNameAndHost {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    margin-bottom: 40px;
+}
+
+.nameAndHost {
+    display: flex;
+    flex-direction: column;
+
+    margin-left: 16px;
+}
+
+.logoName {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+.logoHost {
+    color: var(--secondary-text-color);
+
+    font-size: 13px;
+    line-height: 18px;
+}

@@ -1,0 +1,26 @@
+.channelControlContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+
+    height: 40px;
+}
+
+.tunnellingStatusSpan {
+    margin-left: 8px;
+
+    color: var(--success-color);
+}
+
+.pendingStatusSpan {
+    margin-left: 8px;
+    color: var(--warning-color);
+}
+
+.binIconContainer {
+    margin-left: 25px;
+    justify-self: end;
+
+    cursor: pointer;
+}

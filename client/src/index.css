@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-size: 15px;
+  margin: 0;
+}
+
+.app-header {
+  font-size: 22px;
+  /*font-weight: bold;*/
+  line-height: 30px;
+
+  margin-bottom: 60px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-header {
+  font-size: 18px;
+  /*font-weight: bold;*/
+  line-height: 24px;
+
+  margin-bottom: 24px;
+}
