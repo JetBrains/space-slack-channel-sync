@@ -1,17 +1,17 @@
 # Space Slack Channel Tunnel
 
 The application provides a way to tunnel messages between channels in Space and Slack. You can install it from Space
-Marketplace here: https://plugins.jetbrains.com/plugin/19410-slack-channel-tunnel-beta
+Marketplace [here](https://plugins.jetbrains.com/plugin/19410-slack-channel-tunnel-beta).
 
 You can also build and deploy the application on your own, for that please read on.
 
-## Known issues
+## Issue tracking
 
 Reactions are not synchronized yet, it is a work in progress.
 
 Please report the issues you find [here](https://youtrack.jetbrains.com/issues/SPACE).
 
-## Making your own app deployment
+## Application deployment
 
 To deploy the application please do the following:
 
@@ -81,7 +81,8 @@ for the Space Slack Channel Sync app.
 
 ## Developing the application
 
-If you'd like to make changes to the application and need to set up a local development environment, please read on.
+If you'd like to make changes to the application and need to set up a local development environment, please follow
+the steps below.
 
 ### Run application server locally
 
