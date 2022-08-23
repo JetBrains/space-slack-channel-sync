@@ -88,7 +88,7 @@ kotlin.sourceSets.all {
 sourceSets {
     main {
         resources {
-            srcDirs("client/build")
+            srcDirs("build/client")
         }
     }
 }
@@ -99,7 +99,7 @@ dockerCompose {
     removeVolumes = false
 }
 
-tasks.register("myNpmInstall", NpmTask::class) {
+tasks.register("clientNpmInstall", NpmTask::class) {
     npmCommand.set(listOf("install"))
     workingDir.set(File("./client"))
 }
@@ -108,7 +108,7 @@ tasks.register("buildClient", NpmTask::class) {
     npmCommand.set(listOf("run", "build"))
     workingDir.set(File("./client"))
 
-    dependsOn("myNpmInstall")
+    dependsOn("clientNpmInstall")
 }
 
 tasks {
