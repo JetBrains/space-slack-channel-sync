@@ -1,13 +1,13 @@
 import './select.css';
-import * as theme from "../theme";
+import * as theme from "../service/theme";
 import AsyncSelect from "react-select/async";
 import {components} from "react-select";
 import ChannelIcon from "./channelIcon";
-import * as utils from "../utils";
+import * as utils from "../service/utils";
 
-export default function SelectField(props) {
+export default function ChannelSelectField(props) {
     return (
-        <div className="selectField">
+        <div className="channelSelectField">
             <AsyncSelect
                 defaultOptions={props.defaultOptions}
                 styles={customStyles}

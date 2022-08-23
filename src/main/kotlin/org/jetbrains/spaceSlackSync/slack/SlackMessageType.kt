@@ -59,6 +59,15 @@ sealed interface SlackMessageEvent {
     ) : SlackMessageEvent {
         override val threadId: String? = null
     }
+
+    class ChannelLeave(
+        override val teamId: String,
+        override val channelId: String,
+        override val messageId: String,
+        val leftUserId: String,
+    ) : SlackMessageEvent {
+        override val threadId: String? = null
+    }
 }
 
 interface MessageCreatedOrUpdated {
@@ -129,7 +138,7 @@ fun getSlackMessageEvent(requestBodyJson: JsonElement, requestBody: String): Sla
             )
         }
 
-        SlackMessageType.CHANNEL_JOIN -> {
+        SlackMessageType.USER_JOINED_CHANNEL -> {
             val message = gson.fromJson(requestBody, MessagePayload::class.java)
             val messageEvent = message.event
             val eventJson = requestBodyJson.jsonObject["event"] ?: return null
@@ -142,6 +151,17 @@ fun getSlackMessageEvent(requestBodyJson: JsonElement, requestBody: String): Sla
                 invitedById = invitedById
             )
         }
+
+        SlackMessageType.USER_LEFT_CHANNEL -> {
+            val message = gson.fromJson(requestBody, MessagePayload::class.java)
+            val messageEvent = message.event
+            SlackMessageEvent.ChannelLeave(
+                teamId = message.teamId,
+                channelId = messageEvent.channel,
+                messageId = messageEvent.ts,
+                leftUserId = messageEvent.user,
+            )
+        }
     }
 }
 
@@ -149,7 +169,8 @@ enum class SlackMessageType {
     NEW_MESSAGE,
     MESSAGE_EDITED,
     MESSAGE_DELETED,
-    CHANNEL_JOIN
+    USER_JOINED_CHANNEL,
+    USER_LEFT_CHANNEL,
 }
 
 fun getSlackMessageType(requestBodyJson: JsonElement): SlackMessageType? {
@@ -165,7 +186,8 @@ fun getSlackMessageType(requestBodyJson: JsonElement): SlackMessageType? {
                 else -> SlackMessageType.MESSAGE_EDITED
             }
         }
-        "channel_join" -> return SlackMessageType.CHANNEL_JOIN
+        "channel_join" -> return SlackMessageType.USER_JOINED_CHANNEL
+        "channel_leave" -> return SlackMessageType.USER_LEFT_CHANNEL
         else -> SlackMessageType.NEW_MESSAGE
     }
 }

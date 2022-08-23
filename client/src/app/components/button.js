@@ -1,5 +1,5 @@
 import './button.css';
-import * as theme from "../theme";
+import * as theme from "../service/theme";
 
 export default function Button(props) {
     let disabledClassName = theme.isDark ? "buttonDisabledDark" : "buttonDisabledLight";

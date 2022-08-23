@@ -1,7 +1,7 @@
 import {useState} from "react";
-import ActionPanel from "./components/actionPanel";
-import * as slackWorkspaces from "./slackWorkspaces.js";
-import * as spaceAuth from "./spaceAuth.js";
+import ActionPanel from "./actionPanel";
+import * as slackWorkspaces from "../service/slackTeams.js";
+import * as spaceAuth from "../service/spaceAuth.js";
 
 export default function StartPage(props) {
     let [authorizedInSpace, setAuthorizedInSpace] = useState(spaceAuth.isUserTokenPresent());

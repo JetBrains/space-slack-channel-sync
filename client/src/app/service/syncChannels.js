@@ -1,8 +1,8 @@
 import fetchFromServer from "./fetch";
-import * as slackWorkspaces from "./slackWorkspaces.js";
+import * as slackWorkspaces from "./slackTeams.js";
 import * as slackChannels from "./slackChannels";
 import * as spaceChannels from "./spaceChannels";
-import * as slackTeams from "./slackWorkspaces";
+import * as slackTeams from "./slackTeams";
 import * as syncedChannels from "./syncedChannels.js";
 
 export let chosenSlackChannelToSync = null;

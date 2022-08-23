@@ -25,17 +25,6 @@ fun Application.configureRouting() {
             call.respond(HttpStatusCode.OK)
         }
 
-        // TODO: make index.html refer to js file inside `space-iframe` to simplify this routing
-        static("/space-iframe") {
-            staticBasePackage = "space-iframe"
-            resources(".")
-            defaultResource("index.html")
-        }
-        static("/") {
-            staticBasePackage = "space-iframe"
-            resources(".")
-        }
-
         spaceHomepageRouting()
 
         post<Routes.SpaceApiEndpoint> {

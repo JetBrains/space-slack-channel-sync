@@ -2,18 +2,18 @@ import fetchFromServer from "./fetch.js";
 import * as utils from "./utils.js";
 
 let selectedSlackWorkspace = null;
-let slackWorkspaces = [];
+let slackTeams = [];
 
 export async function loadSlackWorkspaces() {
     let response = await fetchFromServer("/api/slack-workspaces");
-    slackWorkspaces = (await response.json()).workspaces;
-    if (slackWorkspaces.length > 0) {
-        selectedSlackWorkspace = slackWorkspaces[0];
+    slackTeams = (await response.json()).workspaces;
+    if (slackTeams.length > 0) {
+        selectedSlackWorkspace = slackTeams[0];
     }
 }
 
 export function isSlackWorkspaceAdded() {
-    return slackWorkspaces.length > 0;
+    return slackTeams.length > 0;
 }
 
 export function addSlackWorkspace() {

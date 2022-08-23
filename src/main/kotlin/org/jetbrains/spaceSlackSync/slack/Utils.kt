@@ -13,7 +13,7 @@ class SlackUserData(
     val spaceProfile: TD_MemberProfile?,
 )
 
-suspend fun MessageFromSlackCtx.channelIdentifier(event: SlackMessageEvent): ChannelIdentifier {
+suspend fun MessageFromSlackCtx.channelIdentifier(event: SlackMessageEvent): ChannelIdentifier? {
     val ts = event.messageId
     val threadTs = event.threadId
 
@@ -24,7 +24,8 @@ suspend fun MessageFromSlackCtx.channelIdentifier(event: SlackMessageEvent): Cha
         if (spaceMessageId != null) {
             ChannelIdentifier.Thread(spaceMessageId)
         } else {
-            ChannelIdentifier.Id(syncedChannel.spaceChannelId)
+            // message from Slack will not be tunnelled
+            return null
         }
     } else {
         ChannelIdentifier.Id(syncedChannel.spaceChannelId)

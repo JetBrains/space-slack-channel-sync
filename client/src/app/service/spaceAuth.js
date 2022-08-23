@@ -54,7 +54,7 @@ export function getSpaceDomain() {
     return spaceDomain;
 }
 
-export function setUserToken(newUserToken) {
+function setUserToken(newUserToken) {
     userToken = newUserToken;
     onAuthorizedInSpace();
 }

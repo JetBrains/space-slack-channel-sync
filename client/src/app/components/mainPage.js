@@ -1,22 +1,23 @@
 import './mainPage.css';
-import LogoWithNameAndHost from "./components/logoWithNameAndHost";
-import * as spaceOrg from "./spaceOrg";
-import * as slackWorkspaces from "./slackWorkspaces";
-import * as spaceAuth from "./spaceAuth";
+import LogoWithNameAndHost from "./logoWithNameAndHost";
+import * as spaceOrg from "../service/spaceOrg";
+import * as slackWorkspaces from "../service/slackTeams";
+import * as spaceAuth from "../service/spaceAuth";
 import {useState} from "react";
 import React, { Fragment } from 'react'
-import * as slackChannels from "./slackChannels";
-import * as spaceChannels from "./spaceChannels";
-import SelectField from "./components/select";
-import * as syncChannels from "./syncChannels.js";
-import Button from "./components/button";
-import * as syncedChannels from "./syncedChannels.js";
-import ChannelIcon from "./components/channelIcon";
-import Spring from "./components/spring";
-import Icon from "./components/icon";
-import ChannelControls from "./components/channelControls";
-import {redirectToSlackChannel} from "./utils";
-import * as spacePermissions from "./service/spacePermissions";
+import * as slackChannels from "../service/slackChannels";
+import * as spaceChannels from "../service/spaceChannels";
+import ChannelSelectField from "./select";
+import * as syncChannels from "../service/syncChannels.js";
+import Button from "./button";
+import * as syncedChannels from "../service/syncedChannels.js";
+import ChannelIcon from "./channelIcon";
+import Spring from "./spring";
+import Icon from "./icon";
+import ChannelControls from "./channelControls";
+import {redirectToSlackChannel} from "../service/utils";
+import * as spacePermissions from "../service/spacePermissions";
+import UnapprovedPermissionsWarning from "./unapprovedPermissionsWarning";
 
 export default function MainPage() {
     let [readyToSync, setReadyToSync] = useState(syncChannels.readyToSync());
@@ -26,6 +27,7 @@ export default function MainPage() {
 
     return (
         <div className="mainPage">
+            <UnapprovedPermissionsWarning/>
             <div className="mainPageRow">
                 <div className="mainPageCell">
                     <LogoWithNameAndHost
@@ -56,7 +58,7 @@ export default function MainPage() {
 
             <div className="mainPageRow selectFieldsRow">
                 <div className="mainPageCell">
-                    <SelectField
+                    <ChannelSelectField
                         defaultOptions={slackChannels.getDefaultChannelsAsSelectOptions()}
                         loadOptions={slackChannels.loadChannelsAsSelectOptions}
                         onChange={(selectedOption) => {
@@ -68,7 +70,7 @@ export default function MainPage() {
                     />
                 </div>
                 <div className="mainPageCell">
-                    <SelectField
+                    <ChannelSelectField
                         defaultOptions={spaceChannels.getDefaultChannelsAsSelectOptions()}
                         loadOptions={spaceChannels.loadChannelsAsSelectOptions}
                         onChange={(selectedOption) => {

@@ -8,6 +8,10 @@ suspend fun MessageFromSpaceCtx.processNewChatMessageFromSpace() {
     val spaceProfile = (message.author.details as? CUserPrincipalDetails)?.user
     val slackUser = matchSlackUserByEmails(slackClient, spaceProfile)
     val slackThreadId = getSlackThreadId()
+    if (eventData.spaceThreadId != null && slackThreadId == null) {
+        // thread not found in Slack, thread root should be an old message that was not synced
+        return
+    }
 
     val messageText = buildMessageTextForSlack(spaceClient, slackClient, message.text)
     val spaceAttachments = getAttachments()

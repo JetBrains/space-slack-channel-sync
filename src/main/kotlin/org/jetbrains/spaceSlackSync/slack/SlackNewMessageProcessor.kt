@@ -8,7 +8,7 @@ import space.jetbrains.api.runtime.types.ImportMessage
 suspend fun MessageFromSlackCtx.processNewMessage(event: SlackMessageEvent.MessageCreated) {
     val (messageAuthor, messageContent) = messageAuthorAndContent(event)
 
-    val channel = channelIdentifier(event)
+    val channel = channelIdentifier(event) ?: return
     spaceClient.chats.messages.importMessages(
         channel = channel,
         messages = listOf(

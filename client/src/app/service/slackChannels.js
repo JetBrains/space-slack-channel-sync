@@ -1,5 +1,5 @@
 import fetchFromServer from "./fetch";
-import * as slackWorkspaces from "./slackWorkspaces.js";
+import * as slackWorkspaces from "./slackTeams.js";
 
 let defaultChannelsBatch = null;
 

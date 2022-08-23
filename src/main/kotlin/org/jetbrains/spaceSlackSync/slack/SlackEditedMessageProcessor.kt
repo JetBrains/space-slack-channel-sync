@@ -7,8 +7,9 @@ import space.jetbrains.api.runtime.types.ImportMessage
 suspend fun MessageFromSlackCtx.processEditedMessage(event: SlackMessageEvent.MessageUpdated) {
     val (messageAuthor, messageContent) = messageAuthorAndContent(event)
 
+    val channel = channelIdentifier(event) ?: return
     spaceClient.chats.messages.importMessages(
-        channel = channelIdentifier(event),
+        channel = channel,
         messages = listOf(
             ImportMessage.Update(
                 messageId = ChatMessageIdentifier.ExternalId(event.messageId),

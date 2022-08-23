@@ -5,6 +5,7 @@ import io.ktor.http.*
 import io.ktor.http.auth.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.http.content.*
 import io.ktor.server.locations.*
 import io.ktor.server.locations.post
 import io.ktor.server.request.*
@@ -24,6 +25,8 @@ import org.slf4j.LoggerFactory
 import space.jetbrains.api.runtime.SpaceAppInstance
 
 fun Routing.spaceHomepageRouting() {
+    staticContent()
+
     get<Routes.ListSyncedChannels> {
         runAuthorized {
             val response = SyncedChannelsService(it).listSyncedChannels()
@@ -63,6 +66,13 @@ fun Routing.spaceHomepageRouting() {
         }
     }
 
+    get<Routes.MissingAppPermissions> {
+        runAuthorized { spaceTokenInfo ->
+            val response = MissingAppPermissions(spaceTokenInfo).getMissingAppPermissions()
+            call.respond(HttpStatusCode.OK, response)
+        }
+    }
+
     get<Routes.SpaceChannelsToPickForSync> { params ->
         runAuthorized { spaceTokenInfo ->
             val response = SpaceChannelsToPickForSync(spaceTokenInfo).getSpaceChannelsToPickFrom(params.query)
@@ -98,6 +108,19 @@ fun Routing.spaceHomepageRouting() {
             )
             call.respond(HttpStatusCode.OK, response)
         }
+    }
+}
+
+private fun Routing.staticContent() {
+    // TODO: make index.html refer to js file inside `space-iframe` to simplify this routing
+    static("/space-iframe") {
+        staticBasePackage = "space-iframe"
+        resources(".")
+        defaultResource("index.html")
+    }
+    static("/") {
+        staticBasePackage = "space-iframe"
+        resources(".")
     }
 }
 

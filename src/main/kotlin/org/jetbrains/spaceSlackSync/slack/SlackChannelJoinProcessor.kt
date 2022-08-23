@@ -4,26 +4,32 @@ import space.jetbrains.api.runtime.resources.chats
 import space.jetbrains.api.runtime.types.*
 
 suspend fun MessageFromSlackCtx.processChannelJoin(event: SlackMessageEvent.ChannelJoin) {
-    val profile = slackClient.getUserById(event.joinedUserId) ?: return
-    val spaceUserId = getSpaceUserId(SlackPrincipal.SlackUser(profile))
+    if (event.invitedById == null) {
+        // Only send join messages to Space when there is an invitee. This mirrors Space logic for
+        // joining a channel.
+        return
+    }
 
-    val messageAuthor = if (spaceUserId != null) {
-        PrincipalIn.Profile(ProfileIdentifier.Id(spaceUserId))
+    val slackProfile = slackClient.getUserById(event.joinedUserId) ?: return
+    val spaceUser = getSpaceUserId(SlackPrincipal.SlackUser(slackProfile))
+
+    val messageAuthor = if (spaceUser != null) {
+        PrincipalIn.Profile(ProfileIdentifier.Id(spaceUser.id))
     } else {
         PrincipalIn.Application(ApplicationIdentifier.Me)
     }
 
-    val spaceProfileText = if (spaceUserId != null) {
-        "@{$spaceUserId,,,}"
+    val spaceProfileText = if (spaceUser != null) {
+        "@${spaceUser.username}"
     } else {
-        profile.realName?.takeIf { it.isNotEmpty() } ?: profile.displayName ?: ""
+        slackProfile.realName?.takeIf { it.isNotEmpty() } ?: slackProfile.displayName ?: ""
     }
 
     val invitedByProfile = event.invitedById?.let { slackClient.getUserById(it) }
     val invitedBySpaceUser = invitedByProfile?.let { getSpaceUserId(SlackPrincipal.SlackUser(invitedByProfile)) }
 
     val inviteeSpaceProfileText = if (invitedBySpaceUser != null) {
-        "@{$invitedBySpaceUser,,,}"
+        "@${invitedBySpaceUser.username}"
     } else {
         invitedByProfile?.realName
     }
@@ -34,7 +40,7 @@ suspend fun MessageFromSlackCtx.processChannelJoin(event: SlackMessageEvent.Chan
     val messageText = if (inviteeSpaceProfileText == null) {
         "$spaceProfileText joined $channelLink channel in Slack"
     } else {
-        val actionText = if (profile.botId?.isNotEmpty() == true) {
+        val actionText = if (slackProfile.botId?.isNotEmpty() == true) {
             "added"
         } else {
             "invited"
@@ -42,8 +48,10 @@ suspend fun MessageFromSlackCtx.processChannelJoin(event: SlackMessageEvent.Chan
         "$spaceProfileText was $actionText by $inviteeSpaceProfileText to $channelLink channel in Slack"
     }
 
+    val channel = channelIdentifier(event) ?: return
+
     spaceClient.chats.messages.importMessages(
-        channel = channelIdentifier(event),
+        channel = channel,
         messages = listOf(
             ImportMessage.Create(
                 messageId = ChatMessageIdentifier.ExternalId(event.messageId),
@@ -53,6 +61,7 @@ suspend fun MessageFromSlackCtx.processChannelJoin(event: SlackMessageEvent.Chan
                 editedAtUtc = null,
                 attachments = emptyList()
             )
-        )
+        ),
+        suppressNotifications = true
     )
 }

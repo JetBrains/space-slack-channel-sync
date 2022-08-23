@@ -39,6 +39,9 @@ suspend fun processMessageEvent(requestBodyJson: JsonElement, requestBody: Strin
         is SlackMessageEvent.ChannelJoin -> {
             context.processChannelJoin(slackMessageEvent)
         }
+        is SlackMessageEvent.ChannelLeave -> {
+            context.processChannelLeave(slackMessageEvent)
+        }
     }
 }
 

@@ -44,10 +44,10 @@ suspend fun MessageFromSlackCtx.getAttachments(event: MessageCreatedOrUpdated): 
 
 suspend fun MessageFromSlackCtx.messageAuthorAndContent(event: MessageCreatedOrUpdated): Pair<PrincipalIn, ChatMessage> {
     val slackPrincipal = getSlackPrincipal(event)
-    val spaceUserId = getSpaceUserId(slackPrincipal)
+    val spaceUser = getSpaceUserId(slackPrincipal)
 
     return when {
-        spaceUserId != null -> PrincipalIn.Profile(ProfileIdentifier.Id(spaceUserId)) to spaceMessage(event)
+        spaceUser != null -> PrincipalIn.Profile(ProfileIdentifier.Id(spaceUser.id)) to spaceMessage(event)
         else -> {
             val principalName = when (slackPrincipal) {
                 is SlackPrincipal.SlackUser -> {
@@ -98,6 +98,7 @@ suspend fun MessageFromSlackCtx.spaceMessage(
     val spaceProfiles = emails.map {
         spaceClient.teamDirectory.profiles.getProfileByEmail(it) {
             id()
+            username()
             emails {
                 email()
             }
@@ -123,7 +124,7 @@ suspend fun MessageFromSlackCtx.spaceMessage(
 
 suspend fun MessageFromSlackCtx.getSpaceUserId(
     slackPrincipal: SlackPrincipal,
-): String? {
+): TD_MemberProfile? {
     val slackUserPrincipal = slackPrincipal as? SlackPrincipal.SlackUser ?: return null
     val slackUserEmail = slackUserPrincipal.slackUserProfile.email
         ?: return null // not sure — can a Slack user account be created without an email?
@@ -131,7 +132,8 @@ suspend fun MessageFromSlackCtx.getSpaceUserId(
     return try {
         spaceClient.teamDirectory.profiles.getProfileByEmail(slackUserEmail) {
             id()
-        }.id
+            username()
+        }
     } catch (e: Exception) {
         null
     }

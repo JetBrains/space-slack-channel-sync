@@ -59,6 +59,7 @@ private suspend fun StringBuilder.appendRichTextElement(
                 append("> ")
                 appendRichTextElement(it, slackClient, slackDomain, slackUserDataById)
                 appendLine()
+                appendLine()
             }
         }
         is RichTextSectionElement.Text -> {
@@ -73,7 +74,7 @@ private suspend fun StringBuilder.appendRichTextElement(
         is RichTextSectionElement.User -> {
             slackUserDataById.get(element.userId)?.let { slackUserData ->
                 slackUserData.spaceProfile?.let { spaceProfile ->
-                    appendStyled(element.style, "@{${spaceProfile.id},,,}")
+                    appendStyled(element.style, "@${spaceProfile.username}")
                 } ?: run {
                     appendStyled(element.style, "`@${slackUserData.nameToUseInMessage}`")
                 }

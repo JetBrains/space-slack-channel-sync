@@ -1,6 +1,8 @@
+import * as theme from "../service/theme";
+
 export default function Icon(props) {
     let iconName = props.name;
-    if (props.specialIconForDarkTheme) {
+    if (props.specialIconForDarkTheme && theme.isDark) {
         iconName = props.name + `-dark`;
     }
     return (

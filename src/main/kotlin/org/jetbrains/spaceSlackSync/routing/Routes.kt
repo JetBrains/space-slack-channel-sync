@@ -1,7 +1,6 @@
 package org.jetbrains.spaceSlackSync.routing
 
 import io.ktor.server.locations.*
-import kotlinx.serialization.Serializable
 
 object Routes {
     @Location("/api/synced-channels")
@@ -12,6 +11,9 @@ object Routes {
 
     @Location("/api/url-for-adding-slack-team")
     object UrlForAddingSlackTeam
+
+    @Location("/api/missing-app-permissions")
+    object MissingAppPermissions
 
     @Location("/api/space-channels-to-pick-for-sync")
     class SpaceChannelsToPickForSync(val query: String)

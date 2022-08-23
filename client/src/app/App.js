@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
-import * as spaceAuth from "./spaceAuth.js";
-import * as slackTeams from "./slackWorkspaces.js";
-import StartPage from "./startPage.js";
-import MainPage from "./mainPage.js";
-import * as spaceOrg from "./spaceOrg.js";
-import * as slackChannels from "./slackChannels.js";
-import * as spaceChannels from "./spaceChannels.js";
-import * as syncedChannels from "./syncedChannels.js";
+import * as spaceAuth from "./service/spaceAuth.js";
+import * as slackTeams from "./service/slackTeams.js";
+import StartPage from "./components/startPage.js";
+import MainPage from "./components/mainPage.js";
+import * as spaceOrg from "./service/spaceOrg.js";
+import * as slackChannels from "./service/slackChannels.js";
+import * as spaceChannels from "./service/spaceChannels.js";
+import * as syncedChannels from "./service/syncedChannels.js";
 import Icon from "./components/icon";
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
 
     return (
         <div className="app">
-            <span className="app-header">Two-way sync of channels between Slack and Space</span>
+            <span className="app-header">Two-way sync of messages between Slack and Space</span>
             {
                 pageSelectorDataLoaded
                 ? <PageSelector/>
@@ -35,9 +35,8 @@ function App() {
 }
 
 function Loader() {
-    // TODO: use loader image instead
     return (
-        <Icon name="loader" style={{alignSelf: 'center', width: '50px', height: '50px'}}/>
+        <Icon name="loader" style={{alignSelf: 'center', width: '50px', height: '50px', marginTop: '50px'}}/>
     );
 }
 
