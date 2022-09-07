@@ -146,3 +146,7 @@ app installation screen.
 Remember to reconfigure the Slack application settings and then reinstall the application to both Slack workspace and Space organization
 whenever the ngrok tunnel is reestablished with a new address. Space allows multiple applications with the same name, so it's better to drop
 the previous installations from the test organization before installing the application afresh.
+
+# License
+
+`Space Slack Channel Tunnel` is distributed under the terms of the Apache License (Version 2.0).
