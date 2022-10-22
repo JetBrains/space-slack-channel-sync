@@ -182,4 +182,4 @@ private fun getChannelIdentifier(spaceChatEventData: SpaceChatEventData) =
         ChannelIdentifier.Id(it)
     } ?: ChannelIdentifier.Id(spaceChatEventData.spaceChannelId)
 
-private val log: Logger = LoggerFactory.getLogger("SpaceMessageProcessor")
+private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())

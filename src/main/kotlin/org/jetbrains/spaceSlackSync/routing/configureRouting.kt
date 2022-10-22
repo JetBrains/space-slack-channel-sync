@@ -3,7 +3,6 @@ package org.jetbrains.spaceSlackSync.routing
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.http.content.*
 import io.ktor.server.locations.*
 import io.ktor.server.locations.post
 import io.ktor.server.plugins.contentnegotiation.*
