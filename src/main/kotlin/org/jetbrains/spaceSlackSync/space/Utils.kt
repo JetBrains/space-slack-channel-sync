@@ -14,6 +14,7 @@ import space.jetbrains.api.runtime.SpaceClient
 import space.jetbrains.api.runtime.resources.chats
 import space.jetbrains.api.runtime.resources.uploads
 import space.jetbrains.api.runtime.types.*
+import java.lang.invoke.MethodHandles
 import java.net.URI
 
 class MessageFromSpaceCtx(
@@ -145,6 +146,7 @@ fun slackMessageBlocks(
                     altText("")
                 }
             }
+
             is SpaceAttachment.FileAttachment -> {
                 file(externalId = spaceAttachment.slackExternalId, source = FileSource.REMOTE)
             }

@@ -33,6 +33,7 @@ object DB {
         val refreshToken = blob("refreshToken")
         val accessTokenExpiresAt = datetime("accessTokenExpiresAt")
         val created = datetime("created")
+        val tokenInvalid = bool("tokenInvalid").default(false)
     }
 
     object Slack2Space : Table("Slack2Space") {
@@ -75,6 +76,7 @@ object DB {
         val teamCache = text("teamCache")
 
         override val primaryKey = PrimaryKey(slackTeamId)
+
         init {
             uniqueIndex(slackTeamId)
         }

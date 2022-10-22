@@ -21,6 +21,7 @@ import space.jetbrains.api.runtime.helpers.SpaceHttpResponse
 import space.jetbrains.api.runtime.helpers.processPayload
 import space.jetbrains.api.runtime.resources.applications
 import space.jetbrains.api.runtime.types.*
+import java.lang.invoke.MethodHandles
 
 suspend fun processSpaceCall(call: ApplicationCall) {
     try {
@@ -106,4 +107,4 @@ private suspend fun doHandleAppInstallation(spaceClient: SpaceClient) {
     )
 }
 
-private val log: Logger = LoggerFactory.getLogger("SpacePayloadProcessing")
+private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())

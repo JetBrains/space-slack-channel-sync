@@ -8,16 +8,12 @@ val logbackJacksonVersion: String by project
 val exposedVersion: String by project
 val hikariVersion: String by project
 val postgresqlDriverVersion: String by project
-val awsSdkVersion: String by project
 val spaceSdkVersion: String by project
 val slackSdkVersion: String by project
 val kotlinxSerializationVersion: String by project
 val kotlinxHtmlJvmVersion: String by project
 val kotlinxCoroutinesSlf4jVersion: String by project
 val nimbusVersion: String by project
-
-val spaceUsername: String? by extra
-val spacePassword: String? by extra
 
 plugins {
     application

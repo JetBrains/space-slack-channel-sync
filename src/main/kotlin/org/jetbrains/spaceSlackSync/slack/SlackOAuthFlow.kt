@@ -19,6 +19,7 @@ import space.jetbrains.api.runtime.SpaceAuth
 import space.jetbrains.api.runtime.SpaceClient
 import space.jetbrains.api.runtime.resources.applications
 import space.jetbrains.api.runtime.types.ApplicationIdentifier
+import java.lang.invoke.MethodHandles
 import java.time.LocalDateTime
 
 suspend fun onAppInstalledToSlackTeam(call: ApplicationCall, spaceOrgId: String, params: Routes.SlackOAuthCallback) {
@@ -55,7 +56,7 @@ suspend fun onAppInstalledToSlackTeam(call: ApplicationCall, spaceOrgId: String,
         }
 
         val spaceAppInstance = getSpaceAppInstance(spaceOrgId, call) ?: return@withContext
-        db.slackTeams.create(
+        db.slackTeams.createOrUpdate(
             teamId,
             teamResponse.team.domain,
             spaceOrgId,
@@ -106,4 +107,4 @@ fun requestOAuthToken(code: String): OAuthV2AccessResponse? {
     return response
 }
 
-private val log: Logger = LoggerFactory.getLogger("SlackOAuthFlow")
+private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())

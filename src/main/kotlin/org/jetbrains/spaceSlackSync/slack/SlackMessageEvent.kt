@@ -8,9 +8,11 @@ import org.jetbrains.spaceSlackSync.db
 import org.jetbrains.spaceSlackSync.homepage.spaceHttpClient
 import org.jetbrains.spaceSlackSync.storage.SlackTeam
 import org.jetbrains.spaceSlackSync.storage.SyncedChannel
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import space.jetbrains.api.runtime.SpaceAuth
 import space.jetbrains.api.runtime.SpaceClient
+import java.lang.invoke.MethodHandles
 
 class MessageFromSlackCtx(
     val slackClient: SlackClient,
@@ -66,4 +68,4 @@ private fun isMessagePostedByThisApp(requestBodyJson: JsonElement): Boolean {
     return appId == SlackCredentials.appId
 }
 
-private val log = LoggerFactory.getLogger("SlackMessageEvent")
+private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())

@@ -9,4 +9,6 @@
     </root>
     <logger name="Exposed" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+
+    <logger name="org.jetbrains.spaceSlackSync" level="TRACE"/>
 </configuration>

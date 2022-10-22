@@ -107,7 +107,7 @@ In this configuration webpack dev server proxies the incoming API requests to JV
 1. Your browser makes API request, for example, to `HTTP GET https://1877-4533-142-9733-71.eu.ngrok.io/api/homepage-data`.
 2. Request is forwarded to the ngrok instance running locally
 3. Forwarded to webpack dev-server (`localhost:3000`, 3000 being the default port for webpack dev-server)
-4. Forwarded to application server (`localhost:8081`, 8081 being the default port for application server)
+4. Forwarded to application server (`localhost:8080`, 8080 being the default port for application server)
 
 When running ngrok, specify `--host-header` parameter:
 

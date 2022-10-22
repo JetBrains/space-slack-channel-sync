@@ -16,6 +16,7 @@ abstract class BaseSlackClient(
     refreshToken: String,
     permissionScopes: String?,
     accessTokenExpiresAt: LocalDateTime,
+    protected val teamId: String,
     protected val log: Logger
 ) {
     private var tokens: Tokens? = Tokens(accessToken, refreshToken, permissionScopes, accessTokenExpiresAt)
@@ -71,9 +72,13 @@ abstract class BaseSlackClient(
 
         val shouldResetToken = slackErrorsToResetToken.contains(error)
         val slackUserTokenResetMessage = if (shouldResetToken) "Slack user refresh token is reset." else ""
-        log.warn("Got ok=false from Slack on $action - $error. $slackUserTokenResetMessage")
+
+        if (action to error !in noLogActionToResponse) {
+            log.warn("Got ok=false from Slack on $action - $error. $slackUserTokenResetMessage")
+        }
+
         if (shouldResetToken) {
-            resetToken()
+            markTokenAsInvalid()
         }
         return null
     }
@@ -134,7 +139,7 @@ abstract class BaseSlackClient(
 
     protected abstract suspend fun onInvalidAppCredentials()
 
-    protected abstract suspend fun resetToken()
+    protected abstract suspend fun markTokenAsInvalid()
 
 
     protected data class Tokens(
@@ -148,13 +153,17 @@ abstract class BaseSlackClient(
 val slackApiClient: Slack = Slack.getInstance()
 
 /** Slack error codes that cause Slack refresh token reset and repeated request for the user to authenticate in Slack */
-val slackErrorsToResetToken = listOf(
+private val slackErrorsToResetToken = listOf(
     "invalid_auth",
     "account_inactive",
     "no_permission",
     "missing_scope",
     "not_allowed_token_type",
     "cannot_find_service"
+)
+
+private val noLogActionToResponse = listOf(
+    SLACK_ACTION_LOOKUP_USER_BY_EMAIL to "users_not_found"
 )
 
 val httpClientForDownloads = HttpClient(Apache) {

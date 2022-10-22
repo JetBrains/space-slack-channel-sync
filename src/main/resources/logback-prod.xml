@@ -11,4 +11,8 @@
     </root>
     <logger name="Exposed" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+
+    <!-- For troubleshooting next deployment -->
+    <logger name="org.jetbrains.spaceSlackSync" level="TRACE"/>
+
 </configuration>

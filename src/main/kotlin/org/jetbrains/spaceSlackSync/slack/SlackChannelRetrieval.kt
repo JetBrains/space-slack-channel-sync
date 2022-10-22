@@ -1,7 +1,9 @@
 package org.jetbrains.spaceSlackSync.slack
 
 import com.slack.api.model.Conversation
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.invoke.MethodHandles
 
 suspend fun retrieveAllSlackChannels(
     slackClient: SlackClient,
@@ -53,7 +55,7 @@ private suspend fun retrieveSlackChannels(
         }
     }
 
-    log.info("It took $numberOfLoops getChannels calls")
+    log.debug("It took $numberOfLoops getChannels calls")
 
     return results
 }
@@ -61,4 +63,4 @@ private suspend fun retrieveSlackChannels(
 private const val MAX_REQUESTS = 50
 private const val CHANNEL_BATCH_SIZE = 1000
 
-private val log = LoggerFactory.getLogger("SlackChannelRetrieval")
+private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())

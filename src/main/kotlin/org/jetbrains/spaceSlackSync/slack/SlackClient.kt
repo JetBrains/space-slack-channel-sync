@@ -22,15 +22,17 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import kotlin.time.measureTime
 
+const val SLACK_ACTION_LOOKUP_USER_BY_EMAIL = "lookup user by email"
+
 /** Slack client for talking to Slack on behalf of the application itself.
  *  Automatically refreshes token when it expires.
  **/
 class SlackClient constructor(
-    private val teamId: String,
+    teamId: String,
     accessToken: String,
     refreshToken: String,
     accessTokenExpiresAt: LocalDateTime
-) : BaseSlackClient(accessToken, refreshToken, permissionScopes = null, accessTokenExpiresAt, log) {
+) : BaseSlackClient(accessToken, refreshToken, permissionScopes = null, accessTokenExpiresAt, teamId, log) {
 
     companion object {
         suspend fun tryCreate(teamId: String): SlackClient? =
@@ -62,7 +64,7 @@ class SlackClient constructor(
             }
         }
 
-        log.info("getChannels took $duration")
+        log.debug("getChannels took $duration")
 
         return response
     }
@@ -87,7 +89,7 @@ class SlackClient constructor(
     }
 
     suspend fun getUserById(userId: String): User.Profile? {
-        return fetch("lookup user by email in Slack") { accessToken ->
+        return fetch("lookup user by id in Slack") { accessToken ->
             slackApiClient.methods(accessToken).usersProfileGet {
                 it.user(userId)
             }
@@ -95,18 +97,19 @@ class SlackClient constructor(
     }
 
     suspend fun getUserById(builder: RequestConfigurator<UsersProfileGetRequest.UsersProfileGetRequestBuilder>) =
-        fetch("lookup user by email in Slack") { accessToken ->
+        fetch("lookup user by id in Slack") { accessToken ->
             slackApiClient.methods(accessToken).usersProfileGet(builder)
         }
 
     suspend fun tryLookupUserByEmail(email: String): User? {
         return try {
-            fetch("lookup user by email in Slack") { accessToken ->
+            fetch(SLACK_ACTION_LOOKUP_USER_BY_EMAIL) { accessToken ->
                 slackApiClient.methods(accessToken).usersLookupByEmail {
                     it.email(email)
                 }
             }?.user
         } catch (e: Exception) {
+            log.debug("Slack user not found by email. Slack team id = $teamId")
             null
         }
     }
@@ -154,20 +157,20 @@ class SlackClient constructor(
         )
     }
 
-    override suspend fun resetToken() {
-        db.slackTeams.delete(teamId)
+    override suspend fun markTokenAsInvalid() {
+        db.slackTeams.markTokenAsInvalid(teamId)
     }
 
     override suspend fun onInvalidRefreshToken() {
-        resetToken()
+        markTokenAsInvalid()
     }
 
     override suspend fun onInvalidAppCredentials() {
-        resetToken()
+        markTokenAsInvalid()
     }
 }
 
-private val log: Logger = LoggerFactory.getLogger("SlackAppClient")
+private val log: Logger = LoggerFactory.getLogger(SlackClient::class.java)
 
 fun slackAppClient(team: SlackTeam) =
     SlackClient(team.id, team.appAccessToken.decrypted(), team.appRefreshToken.decrypted(), team.accessTokenExpiresAt)

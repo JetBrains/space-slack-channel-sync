@@ -19,12 +19,15 @@ import space.jetbrains.api.runtime.SpaceAppInstance
 import java.time.LocalDateTime
 
 class PostgresStorage(private val db: Database) : Storage {
+    @Suppress("RemoveRedundantQualifierName")
     override val slackTeams = object : Storage.SlackTeams {
         override suspend fun getForSpaceOrg(spaceAppClientId: String): List<SlackTeam> {
             return tx {
                 (DB.SlackTeams innerJoin DB.Slack2Space innerJoin DB.SpaceAppInstance)
                     .slice(DB.SlackTeams.columns)
-                    .select { DB.SpaceAppInstance.clientId eq spaceAppClientId }
+                    .select {
+                        (DB.SpaceAppInstance.clientId eq spaceAppClientId) and (DB.SlackTeams.tokenInvalid eq false)
+                    }
                     .map { it.toSlackTeam() }
             }
         }
@@ -71,7 +74,7 @@ class PostgresStorage(private val db: Database) : Storage {
             }
         }
 
-        override suspend fun create(
+        override suspend fun createOrUpdate(
             teamId: String,
             domain: String,
             spaceAppClientId: String,
@@ -88,13 +91,14 @@ class PostgresStorage(private val db: Database) : Storage {
                             it[DB.SlackTeams.accessToken] = ExposedBlob(accessToken)
                             it[DB.SlackTeams.accessTokenExpiresAt] = accessTokenExpiresAt
                             it[DB.SlackTeams.refreshToken] = ExposedBlob(refreshToken)
+                            it[DB.SlackTeams.tokenInvalid] = false
                         }
                     )
                 } else {
                     DB.SlackTeams.insert {
-                        it[id] = teamId
+                        it[DB.SlackTeams.id] = teamId
                         it[DB.SlackTeams.domain] = domain
-                        it[created] = LocalDateTime.now()
+                        it[DB.SlackTeams.created] = LocalDateTime.now()
                         it[DB.SlackTeams.accessToken] = ExposedBlob(accessToken)
                         it[DB.SlackTeams.accessTokenExpiresAt] = accessTokenExpiresAt
                         it[DB.SlackTeams.refreshToken] = ExposedBlob(refreshToken)
@@ -114,9 +118,16 @@ class PostgresStorage(private val db: Database) : Storage {
             }
         }
 
-        override suspend fun delete(teamId: String) {
+        override suspend fun markTokenAsInvalid(teamId: String) {
             tx {
-                DB.SlackTeams.deleteWhere { DB.SlackTeams.id eq teamId }
+                DB.SlackTeams.update(
+                    where = {
+                        DB.SlackTeams.id eq teamId
+                    },
+                    body = {
+                        it[tokenInvalid] = true
+                    }
+                )
             }
         }
 

@@ -135,6 +135,15 @@ private fun StringBuilder.appendInlineNode(node: InlineNode, slackUserBySpaceUse
 
             node.marks.forEach { closeMark(it) }
         }
+        is RtMention -> {
+            val slackUser = node.getSpaceProfileId()?.let { spaceUserId -> slackUserBySpaceUserId[spaceUserId] }
+            if (slackUser != null) {
+                append("@${slackUser.name}")
+            } else {
+//                append("[${node.plainTextValue()}](${node.attrs.href})")
+                append("@${node.plainTextValue()}")
+            }
+        }
         is RtEmoji -> {
             append(":${node.emojiName}:")
         }
@@ -224,5 +233,38 @@ private fun MutableSet<String>.gatherUserIds(node: InlineNode) {
                 mark.getSpaceUserId()?.let { add(it) }
             }
         }
+        is RtMention -> {
+            node.getSpaceProfileId()?.let { add(it) }
+        }
+    }
+}
+
+private fun RtMention.getSpaceProfileId(): String? {
+    return when (val mentionAttrs = attrs) {
+        is RtProfileMentionAttrs -> {
+            mentionAttrs.id
+        }
+        is RtTeamMentionAttrs -> {
+            null
+        }
+        is RtPredefinedMentionAttrs -> {
+            null
+        }
+        else -> null
+    }
+}
+
+private fun RtMention.plainTextValue(): String {
+    return when (val mentionAttrs = attrs) {
+        is RtProfileMentionAttrs -> {
+            mentionAttrs.userName
+        }
+        is RtTeamMentionAttrs -> {
+            mentionAttrs.teamName
+        }
+        is RtPredefinedMentionAttrs -> {
+            ""
+        }
+        else -> ""
     }
 }

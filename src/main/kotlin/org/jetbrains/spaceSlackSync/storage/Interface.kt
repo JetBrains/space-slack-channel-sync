@@ -18,7 +18,7 @@ interface Storage {
     interface SlackTeams {
         suspend fun getForSpaceOrg(spaceAppClientId: String): List<SlackTeam>
         suspend fun getById(teamId: String, spaceAppClientId: String? = null): SlackTeam?
-        suspend fun create(
+        suspend fun createOrUpdate(
             teamId: String,
             domain: String,
             spaceAppClientId: String,
@@ -30,7 +30,7 @@ interface Storage {
         suspend fun updateDomain(teamId: String, newDomain: String)
         suspend fun updateTokens(teamId: String, accessToken: ByteArray, refreshToken: ByteArray?, accessTokenExpiresAt: LocalDateTime)
         suspend fun disconnectFromSpaceOrg(teamId: String, spaceAppClientId: String)
-        suspend fun delete(teamId: String)
+        suspend fun markTokenAsInvalid(teamId: String)
     }
 
     interface SpaceAppInstances {

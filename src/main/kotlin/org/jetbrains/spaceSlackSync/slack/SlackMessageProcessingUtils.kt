@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import space.jetbrains.api.runtime.resources.teamDirectory
 import space.jetbrains.api.runtime.resources.uploads
 import space.jetbrains.api.runtime.types.*
+import java.lang.invoke.MethodHandles
 
 suspend fun MessageFromSlackCtx.getAttachments(event: MessageCreatedOrUpdated): List<AttachmentIn> {
     return event.files.orEmpty()
@@ -171,7 +172,7 @@ private suspend fun MessageFromSlackCtx.getSlackPrincipal(event: MessageCreatedO
     }
 }
 
-private val log: Logger = LoggerFactory.getLogger("SlackMessageProcessingUtils")
+private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 
 private val imageFileExtensions = listOf("png", "gif", "jpg", "jpeg", "heic")
 

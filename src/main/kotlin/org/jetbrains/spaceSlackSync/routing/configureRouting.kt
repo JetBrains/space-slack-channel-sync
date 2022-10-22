@@ -36,8 +36,10 @@ fun Application.configureRouting() {
             when {
                 flowId.isNullOrBlank() ->
                     call.respond(HttpStatusCode.BadRequest, "Expected state param in callback request")
+
                 flowId.startsWith("org-") ->
                     onAppInstalledToSlackTeam(call, flowId.removePrefix("org-"), params)
+
                 else ->
                     call.respond(HttpStatusCode.BadRequest, "Malformed state param in callback request")
             }

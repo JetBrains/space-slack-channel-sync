@@ -1,9 +1,13 @@
 package org.jetbrains.spaceSlackSync.space
 
 import org.jetbrains.spaceSlackSync.db
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.invoke.MethodHandles
 
 suspend fun MessageFromSpaceCtx.processUpdatedChatMessageFromSpace() {
+    log.debug("UPDATED message from Space. Space client id: ${spaceClient.appInstance.clientId}, space channel id: ${syncedChannel.spaceChannelId}")
+
     val messageText = buildMessageTextForSlack(spaceClient, slackClient, message.text)
     val spaceAttachments = getAttachments()
 
@@ -20,4 +24,4 @@ suspend fun MessageFromSpaceCtx.processUpdatedChatMessageFromSpace() {
     }
 }
 
-private val log = LoggerFactory.getLogger("SpaceEditedMessageProcessor")
+private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
