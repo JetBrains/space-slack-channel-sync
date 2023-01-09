@@ -1,9 +1,23 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-            <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter" />
-            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
-            <appendLineSeparator>true</appendLineSeparator>
+        <layout class="net.logstash.logback.layout.LoggingEventCompositeJsonLayout">
+            <lineSeparator>SYSTEM</lineSeparator>
+            <providers>
+                <sequence />
+                <timestamp pattern="yyyy-MM-dd' 'HH:mm:ss.SSS" />
+                <loggerName />
+                <logLevel />
+                <threadName />
+                <rawMessage />
+                <message />
+                <mdc />
+                <arguments />
+                <throwableClassName />
+                <throwableMessage />
+                <throwableRootCauseClassName />
+                <throwableRootCauseMessage />
+                <stackTrace />
+            </providers>
         </layout>
     </appender>
     <root level="INFO">
