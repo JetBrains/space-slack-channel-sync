@@ -3,8 +3,7 @@ import java.util.*
 
 val ktorVersion: String by project
 val logbackVersion: String by project
-val logbackJsonClassicVersion: String by project
-val logbackJacksonVersion: String by project
+val logbackEncoderVersion: String by project
 val exposedVersion: String by project
 val hikariVersion: String by project
 val postgresqlDriverVersion: String by project
@@ -53,8 +52,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesSlf4jVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("ch.qos.logback.contrib:logback-json-classic:$logbackJsonClassicVersion")
-    implementation("ch.qos.logback.contrib:logback-jackson:$logbackJacksonVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logbackEncoderVersion")
 
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
