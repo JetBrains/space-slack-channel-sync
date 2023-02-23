@@ -1,0 +1,48 @@
+.mainPage {
+    display: flex;
+    flex-direction: column;
+}
+
+.mainPageTd {
+    padding-right: 16px;
+}
+
+.selectRowTd {
+    padding-bottom: 32px;
+}
+
+.channelWarningRowTd {
+    text-align: right;
+    padding-bottom: 24px;
+    padding-right: 16px;
+}
+
+.selectFieldsRow {
+    margin-bottom: 32px;
+}
+
+.syncedChannel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    background-color: var(--main-color-5);
+}
+
+.syncedChannelName {
+    margin-left: 8px;
+}
+
+.warningText {
+    color: var(--warning-color);
+
+    margin-top: 6px;
+    align-self: flex-end;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.link {
+    cursor: pointer;
+    text-decoration: underline;
+}

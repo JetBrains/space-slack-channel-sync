@@ -21,7 +21,7 @@ To deploy the application please do the following:
 
 ### 1. Build and deploy the application
 
-To build the application run the `distZip` gradle task. The application will be at `build/distributions/space-slack-sync.zip`.
+To build the application run the `distZip` gradle task. The application will be at `app/build/distributions/space-slack-sync.zip`.
 
 The application is intended to be built and run with JDK 11. Other JDK versions have not been tested.
 

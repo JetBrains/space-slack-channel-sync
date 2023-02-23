@@ -1,8 +1,5 @@
-/.gradle/
+**/local.properties
+**/.gradle/
 /.idea/
 **/build/
-local.properties
-/client/node_modules/
-/client/build/
-/client/package-lock.json
 **/.DS_Store
