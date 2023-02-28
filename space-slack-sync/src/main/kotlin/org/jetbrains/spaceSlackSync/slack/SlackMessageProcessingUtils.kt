@@ -144,10 +144,12 @@ suspend fun MessageFromSlackCtx.spaceMessage(
         .toMap()
 
     val slackUserDataById = slackProfileResponseById.map { (slackUserId, slackUserResponse) ->
-        val email = slackUserResponse.profile.email.lowercase()
-        val spaceProfile = spaceProfileByEmail[email]
-        SlackUserData(slackUserId, slackUserResponse.userName(), spaceProfile)
-    }.associateBy { it.id }
+        slackUserResponse.profile?.email?.lowercase().let { email ->
+            val spaceProfile = email?.let { spaceProfileByEmail[email] }
+            SlackUserData(slackUserId, slackUserResponse.userName(), spaceProfile)
+        }
+    }
+        .associateBy { it.id }
 
     return buildMessage(
         slackClient,
