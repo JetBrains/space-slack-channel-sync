@@ -1,3 +1,4 @@
+[![JetBrains team project](https://jb.gg/badges/team.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 # Space Slack Channel Tunnel
 
 The application provides a way to tunnel messages between channels in Space and Slack. You can install it from Space
