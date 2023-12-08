@@ -185,7 +185,7 @@ function SyncedChannels(props: SyncedChannelsProps) {
                         <td className="mainPageTd">
                             <ChannelControls
                                 synced={syncedChannel.isMemberInSlackChannel && syncedChannel.isAuthorizedInSpaceChannel && !syncedChannel.isNewChannelForOptimisticUpdate}
-                                hasPermissionToStopSync={syncedChannel.userIsAdminInSpaceChannel}
+                                hasPermissionToStopSync={true}
                                 onRemoveChannelFromSync={() => props.onRemoveChannel(syncedChannel)}
                             />
                         </td>

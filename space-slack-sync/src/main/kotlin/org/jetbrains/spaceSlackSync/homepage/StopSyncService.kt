@@ -12,12 +12,12 @@ class StopSyncService(spaceTokenInfo: SpaceTokenInfo) : ServiceBase(spaceTokenIn
             slackTeamId,
             slackChannelId
         )?.let {
-            if (!userHasAdminPermission(spaceChannelId)) {
-                return StopSyncResponse(
-                    success = false,
-                    "Only a channel administrator can stop synchronization for that channel"
-                )
-            }
+//            if (!userHasAdminPermission(spaceChannelId)) {
+//                return StopSyncResponse(
+//                    success = false,
+//                    "Only a channel administrator can stop synchronization for that channel"
+//                )
+//            }
 
             db.syncedChannels.remove(
                 spaceTokenInfo.spaceAppInstance.clientId,
